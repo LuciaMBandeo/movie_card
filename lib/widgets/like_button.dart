@@ -26,7 +26,8 @@ class _LikeButton extends State<LikeButton> {
           color: Colors.red,
         ),
         label: Text('Likes ($_counter)'),
-        style: ElevatedButton.styleFrom(backgroundColor: Colors.indigo[400]),
+        style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(Constants.backgroundColor)),
       ),
     );
   }
