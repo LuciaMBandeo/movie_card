@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../routes/movie_details.dart';
-import '../../routes/movie_list.dart';
+import 'config/router/movie_router.dart';
+import 'presentation/view/movie_details.dart';
+import 'presentation/view/movie_list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,10 +13,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: MovieList.routeName,
+      initialRoute: MovieRouter.movieList,
       routes: {
-        MovieList.routeName: (context) => const MovieList(),
-        MovieDetails.routeName: (context) => const MovieDetails(),
+        MovieRouter.movieList: (context) => const MovieList(),
+        MovieRouter.movieDetails: (context) => const MovieDetails(),
       },
     );
   }
