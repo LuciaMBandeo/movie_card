@@ -1,27 +1,33 @@
 import 'dart:convert';
 
-import 'package:flutter/services.dart';
-
-import '../../../domain/entity/genre.dart';
+import '../../../core/utils/enums/states.dart';
+import '../../../core/utils/resources/data_state.dart';
 import '../../../domain/repository/interfaces/i_genres_repository.dart';
+import '../../datasources/remote/api_service.dart';
+import '../../model/genre_model.dart';
 
 class GenresRepository implements IGenresRepository {
-  static const mockDataGenres = 'assets/mock_data/genres.json';
-  late List<Genre> genresById = [];
+  final ApiService apiService;
 
-  Future<List<Genre>> parseJsonGenres() async {
-    final jsonPath = await rootBundle.loadString(mockDataGenres);
-    final Map<String, dynamic> json = jsonDecode(jsonPath);
-    return genresById = json['genres']
-        .map<Genre>((genreJson) => Genre.fromJson(genreJson))
-        .toList();
-  }
+  GenresRepository({
+    ApiService? apiService,
+  }) : apiService = apiService ?? ApiService();
 
   @override
-  Future<List<Genre>> getGenres() async {
-    if (genresById.isEmpty) {
-      genresById = await parseJsonGenres();
+  Future<DataState<List<GenreModel>>> fetchGenresList() async {
+    DataState<dynamic> result = await apiService.fetchGenresList();
+    if (result.state == States.success) {
+      return DataSuccess(
+        List<GenreModel>.from(
+          jsonDecode(result.data)["genres"].map(
+            (genre) => GenreModel.fromJson(genre),
+          ),
+        ),
+      );
+    } else {
+      return DataFailure(
+        result.error!,
+      );
     }
-    return genresById;
   }
 }

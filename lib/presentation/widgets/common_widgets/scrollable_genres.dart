@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/utils/constants/dimens.dart';
-import '../../../domain/entity/genre.dart';
+import '../../../domain/entity/genre_entity.dart';
 
 class ScrollableGenres extends StatelessWidget {
   const ScrollableGenres({
@@ -9,7 +9,10 @@ class ScrollableGenres extends StatelessWidget {
     required this.genres,
   });
 
-  final List<Genre> genres;
+  final List<GenreEntity> genres;
+  static const _blurRadiusDecoratedBox = 10.0;
+  static const _offsetXDecoratedBox = 0.0;
+  static const _offsetYDecoratedBox = 10.0;
 
   @override
   Widget build(BuildContext context) {
@@ -30,16 +33,16 @@ class ScrollableGenres extends StatelessWidget {
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
-                        Dimens.borderRadiusDecoratedBox,
+                        _blurRadiusDecoratedBox,
                       ),
                       color: Colors.black26,
                       boxShadow: const [
                         BoxShadow(
                           color: Colors.black26,
-                          blurRadius: Dimens.blurRadiusDecoratedBox,
+                          blurRadius: _blurRadiusDecoratedBox,
                           offset: Offset(
-                            Dimens.offsetXDecoratedBox,
-                            Dimens.offsetYDecoratedBox,
+                            _offsetXDecoratedBox,
+                            _offsetYDecoratedBox,
                           ),
                         ),
                       ],

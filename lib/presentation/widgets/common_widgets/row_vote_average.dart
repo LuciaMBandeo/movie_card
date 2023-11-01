@@ -4,12 +4,12 @@ import '../../../core/utils/constants/dimens.dart';
 import 'row_stars.dart';
 
 class RowVoteAverage extends StatelessWidget {
-  final num voteAverage;
-
   const RowVoteAverage(
     this.voteAverage, {
     super.key,
   });
+
+  final num voteAverage;
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,7 @@
-import '../../entity/movie.dart';
+import '../../../core/utils/enums/endpoints.dart';
+import '../../../core/utils/resources/data_state.dart';
+import '../../../data/model/result_model.dart';
 
 abstract class IMoviesRepository {
-  Future<List<Movie>> getMovies();
-
-  Future<Movie> getMovieById(int id);
+  Future<DataState<ResultModel>> fetchMovies(Endpoints chosenEndpoint);
 }
