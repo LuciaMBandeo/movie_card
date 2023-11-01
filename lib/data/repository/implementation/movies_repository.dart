@@ -1,33 +1,28 @@
-import 'dart:convert';
-
-import 'package:flutter/services.dart';
-
-import '../../../domain/entity/movie.dart';
+import '../../../core/utils/enums/endpoints.dart';
+import '../../../core/utils/enums/states.dart';
+import '../../../core/utils/resources/data_state.dart';
 import '../../../domain/repository/interfaces/i_movies_repository.dart';
+import '../../datasources/remote/api_service.dart';
+import '../../model/result_model.dart';
 
 class MoviesRepository extends IMoviesRepository {
-  static const mockDataMovies = 'assets/mock_data/movies.json';
-  List<Movie> parsedMovieList = [];
+  final ApiService apiService;
 
-  Future<List<Movie>> parseMovies() async {
-    final jsonPath = await rootBundle.loadString(mockDataMovies);
-    return List.from(
-        jsonDecode(jsonPath).map((movie) => Movie.fromJson(movie)));
-  }
+  MoviesRepository({
+    ApiService? apiService,
+  }): apiService = apiService ?? ApiService();
 
   @override
-  Future<List<Movie>> getMovies() async {
-    if (parsedMovieList.isEmpty) {
-      parsedMovieList = await parseMovies();
+  Future<DataState<ResultModel>> fetchMovies(Endpoints chosenEndpoint) async {
+    DataState<dynamic> result = await apiService.fetchMovieList(chosenEndpoint);
+    if (result.state == States.success) {
+      return DataSuccess<ResultModel>(
+        ResultModel.fromJson(result.data),
+      );
+    } else {
+      return DataFailure<ResultModel>(
+        result.error!,
+      );
     }
-    return parsedMovieList;
-  }
-
-  @override
-  Future<Movie> getMovieById(int id) async {
-    if (parsedMovieList.isEmpty) {
-      parsedMovieList = await parseMovies();
-    }
-    return parsedMovieList.where((element) => element.id == id).first;
   }
 }

@@ -1,9 +1,9 @@
-import '../../domain/entity/genre.dart';
-import '../../domain/entity/movie.dart';
+import '../../domain/entity/genre_entity.dart';
+import '../../domain/entity/movie_entity.dart';
 
 class MoviePreview {
-  final Movie movie;
-  final List<Genre> genres;
+  final MovieEntity movie;
+  final List<GenreEntity> genres;
 
   MoviePreview(
     this.movie,

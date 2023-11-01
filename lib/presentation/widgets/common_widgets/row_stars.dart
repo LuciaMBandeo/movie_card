@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 
 class StarsRow extends StatelessWidget {
-  final num voteAverage;
-  static const voteAverageIcon = Icons.star;
-
   const StarsRow(
     this.voteAverage, {
     super.key,
   });
 
+  final num voteAverage;
+  static const voteAverageIcon = Icons.star;
+  static const int _maxStars = 5;
+  static const int _divideInHalf = 2;
+  static const double _gradientStop = 1;
+
   List<Widget> _starsView() {
-    int fullStar = (voteAverage / 2).floor();
-    double halfFilledStar = (voteAverage / 2) - fullStar;
+    int fullStar = (voteAverage / _divideInHalf).floor(); //1
+    double halfFilledStar = (voteAverage / _divideInHalf) - fullStar; //0.75
     List<Widget> stars = [];
-    for (int i = 1; i <= fullStar; i++) {
+    for (int i = 0; i < fullStar; i++) {
       stars.add(
         const Icon(
           voteAverageIcon,
@@ -35,25 +38,40 @@ class StarsRow extends StatelessWidget {
       case > 0.65:
         halfFilledOpacity = 0.6;
     }
-    stars.add(
-      ShaderMask(
-        shaderCallback: (Rect bounds) {
-          return LinearGradient(
-            colors: const [
-              Colors.yellow,
-              Colors.transparent,
-            ],
-            stops: [
-              halfFilledOpacity,
-              1,
-            ],
-          ).createShader(bounds);
-        },
-        child: const Icon(
-          voteAverageIcon,
+    if (fullStar != _maxStars) {
+      int emptyStars = _maxStars - fullStar - halfFilledStar.ceil(); //5-1-1
+      stars.add(
+        ShaderMask(
+          shaderCallback: (
+            Rect bounds,
+          ) {
+            return LinearGradient(
+              colors: const [
+                Colors.yellow,
+                Colors.transparent,
+              ],
+              stops: [
+                halfFilledOpacity,
+                _gradientStop,
+              ],
+            ).createShader(
+              bounds,
+            );
+          },
+          blendMode: BlendMode.srcIn,
+          child: const Icon(
+            voteAverageIcon,
+          ),
         ),
-      ),
-    );
+      );
+      for (int i = 0; i < emptyStars; i++) {
+        stars.add(
+          const Icon(
+            voteAverageIcon,
+          ),
+        );
+      }
+    }
     return stars;
   }
 
