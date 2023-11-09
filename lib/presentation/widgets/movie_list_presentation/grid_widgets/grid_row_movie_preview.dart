@@ -36,6 +36,9 @@ class GridRowMoviePreview extends StatelessWidget {
               children: [
                 CachedNetworkImage(
                   imageUrl: backdrop,
+                  errorWidget: (context, url, error) => const Icon(
+                    Icons.error,
+                  ),
                   imageBuilder: (context, imageProvider) => Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
@@ -44,8 +47,8 @@ class GridRowMoviePreview extends StatelessWidget {
                     ),
                     width: MediaQuery.of(context).size.width *
                         _widthPercentageBoxDecorationGrid,
-                    child: Image.network(
-                      backdrop,
+                    child: Image(
+                      image: imageProvider,
                       fit: BoxFit.cover,
                     ),
                   ),

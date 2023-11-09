@@ -13,43 +13,53 @@ class ApiService {
   Client client;
 
   ApiService({
-    Client? client,
-  }) : client = client ?? Client();
+    required this.client,
+  });
 
   Future<DataState<Map<String, dynamic>>> fetchMovieList(
     Endpoints chosenEndpoint,
   ) async {
-    final response = await client.get(
-      Uri.parse(
-        "${Strings.moviesBaseUrl}${chosenEndpoint.endpointName}${Strings.apiKey}$_apiKey",
-      ),
-    );
-    if (response.statusCode == HttpStatus.ok) {
-      return DataSuccess(
-        jsonDecode(
-          response.body,
+    try {
+      final response = await client.get(
+        Uri.parse(
+          "${Strings.moviesBaseUrl}${chosenEndpoint.endpointName}${Strings.apiKey}$_apiKey",
         ),
       );
-    } else {
-      return DataFailure(
-        Exception(Strings.errorText),
-      );
+      if (response.statusCode == HttpStatus.ok) {
+        return DataSuccess(
+          jsonDecode(
+            response.body,
+          ),
+        );
+      } else {
+        return DataFailure(
+          Exception(Strings.errorText),
+        );
+      }
+    } catch (e) {
+      return DataFailure(Exception(e));
     }
   }
 
   Future<DataState<dynamic>> fetchGenresList() async {
-    final response = await client.get(
-      Uri.parse(
-        "${Strings.genresUrl}${Strings.apiKey}$_apiKey",
-      ),
-    );
-    if (response.statusCode == HttpStatus.ok) {
-      return DataSuccess(
-        response.body,
+    try {
+      final response = await client.get(
+        Uri.parse(
+          "${Strings.genresUrl}${Strings.apiKey}$_apiKey",
+        ),
       );
-    } else {
+      if (response.statusCode == HttpStatus.ok) {
+        return DataSuccess(
+          response.body,
+        );
+      } else {
+        return DataFailure(
+          Exception(Strings.errorText),
+        );
+      }
+    } catch (e) {
       return DataFailure(
-        Exception(Strings.errorText),
+        Exception(e),
       );
     }
   }

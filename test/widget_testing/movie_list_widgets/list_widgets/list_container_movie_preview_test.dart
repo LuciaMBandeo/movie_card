@@ -38,6 +38,7 @@ void main() {
         video: false,
         voteAverage: 8.7,
         voteCount: 340,
+        category: [],//arreglar
       );
       final List<GenreEntity> genres = [
         GenreEntity(id: 1, name: "Acción"),

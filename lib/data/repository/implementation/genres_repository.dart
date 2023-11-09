@@ -10,23 +10,29 @@ class GenresRepository implements IGenresRepository {
   final ApiService apiService;
 
   GenresRepository({
-    ApiService? apiService,
-  }) : apiService = apiService ?? ApiService();
+    required this.apiService,
+  });
 
   @override
   Future<DataState<List<GenreModel>>> fetchGenresList() async {
-    DataState<dynamic> result = await apiService.fetchGenresList();
-    if (result.state == States.success) {
-      return DataSuccess(
-        List<GenreModel>.from(
-          jsonDecode(result.data)["genres"].map(
-            (genre) => GenreModel.fromJson(genre),
+    try {
+      DataState<dynamic> result = await apiService.fetchGenresList();
+      if (result.state == States.success) {
+        return DataSuccess(
+          List<GenreModel>.from(
+            jsonDecode(result.data)["genres"].map(
+              (genre) => GenreModel.fromJson(genre),
+            ),
           ),
-        ),
-      );
-    } else {
+        );
+      } else {
+        return DataFailure(
+          result.error!,
+        );
+      }
+    } catch (e) {
       return DataFailure(
-        result.error!,
+        Exception(e),
       );
     }
   }

@@ -12,10 +12,9 @@ import '../../domain/use_cases/implementation/movies_use_case.dart';
 
 class MoviesBloc implements IBloc {
   MoviesBloc({
-    GenresUseCase? genresUseCase,
-    MoviesUseCase? moviesUseCase,
-  })  : genresUseCase = genresUseCase ?? GenresUseCase(),
-        moviesUseCase = moviesUseCase ?? MoviesUseCase();
+    required this.genresUseCase,
+    required this.moviesUseCase,
+  });
 
   final GenresUseCase genresUseCase;
   final MoviesUseCase moviesUseCase;
@@ -90,42 +89,49 @@ class MoviesBloc implements IBloc {
   Future<void> fetchEndpointsMovies(Endpoints endpoint) async {
     List<MovieEntity> movieListEndpoint = [];
     addStateStream(endpoint, const DataLoading());
-    final result = await moviesUseCase.call(
-      params: endpoint,
-    );
-    if (result is DataSuccess) {
-      movieListEndpoint = result.data ?? [];
-      List<GenreEntity> genres = await _fetchMoviesGenres(
-        movieListEndpoint
-            .map(
-              (movie) => movie.genres,
-            )
-            .expand(
-              (element) => element,
-            )
-            .toList(),
+    try {
+      final result = await moviesUseCase.call(
+        params: endpoint,
       );
-      List<MoviePreview> moviePreview = movieListEndpoint.map((movie) {
-        final movieGenres = genres
-            .where(
-              (genre) => movie.genres.contains(genre.id),
-            )
-            .toList();
-        return MoviePreview(
-          movie,
-          movieGenres,
+      if (result is DataSuccess) {
+        movieListEndpoint = result.data!;
+        List<GenreEntity> genres = await _fetchMoviesGenres(
+          movieListEndpoint
+              .map(
+                (movie) => movie.genres,
+              )
+              .expand(
+                (element) => element,
+              )
+              .toList(),
         );
-      }).toList();
-      addStateStream(
-        endpoint,
-        DataSuccess(moviePreview),
-      );
-    } else {
-      addStateStream(
+        List<MoviePreview> moviePreview = movieListEndpoint.map((movie) {
+          final movieGenres = genres
+              .where(
+                (genre) => movie.genres.contains(genre.id),
+              )
+              .toList();
+          return MoviePreview(
+            movie,
+            movieGenres,
+          );
+        }).toList();
+        addStateStream(
+          endpoint,
+          DataSuccess(moviePreview),
+        );
+      } else {
+        addStateStream(
+          endpoint,
+          const DataEmpty(),
+        );
+      }
+    } catch (e) {
+      return addStateStream(
         endpoint,
         DataFailure(
           Exception(
-            Strings.errorText,
+            Strings.errorMovieNotFound,
           ),
         ),
       );

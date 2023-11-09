@@ -3,6 +3,8 @@ class Strings {
   static const moviesBaseUrl = "https://api.themoviedb.org/3/movie/";
   static const genresUrl = "https://api.themoviedb.org/3/genre/movie/list";
   static const apiKey = "?api_key=";
+  static const noMoviesFoundImagePath = "assets/no_movies_found.png";
+  static const theMovieDBImagePath = "assets/the_movie_db.png";
 
   static const overview = "Overview:";
   static const originalTitle = "Original Title:";
@@ -18,5 +20,5 @@ class Strings {
   static const upcomingEndpoint = "upcoming";
   static const appTitle = "The MovieDB";
   static const errorText = "Failed to load";
-  static const errorMovieNotFound = "Sorry! We couldn't find any movie";
+  static const errorMovieNotFound = "Sorry! We couldn't find any movies";
 }

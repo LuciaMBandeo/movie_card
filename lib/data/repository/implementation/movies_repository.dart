@@ -9,19 +9,30 @@ class MoviesRepository extends IMoviesRepository {
   final ApiService apiService;
 
   MoviesRepository({
-    ApiService? apiService,
-  }): apiService = apiService ?? ApiService();
+    required this.apiService,
+  });
 
   @override
   Future<DataState<ResultModel>> fetchMovies(Endpoints chosenEndpoint) async {
-    DataState<dynamic> result = await apiService.fetchMovieList(chosenEndpoint);
-    if (result.state == States.success) {
-      return DataSuccess<ResultModel>(
-        ResultModel.fromJson(result.data),
+    try {
+      DataState<dynamic> result = await apiService.fetchMovieList(
+        chosenEndpoint,
       );
-    } else {
-      return DataFailure<ResultModel>(
-        result.error!,
+      if (result.state == States.success) {
+        return DataSuccess<ResultModel>(
+          ResultModel.fromJson(
+            result.data,
+            chosenEndpoint.endpointName,
+          ),
+        );
+      } else {
+        return DataFailure<ResultModel>(
+          result.error!,
+        );
+      }
+    } catch (e) {
+      return DataFailure(
+        Exception(e),
       );
     }
   }

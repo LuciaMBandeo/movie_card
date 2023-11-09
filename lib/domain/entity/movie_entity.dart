@@ -1,9 +1,13 @@
+import 'package:floor/floor.dart';
+
 import '../../core/utils/constants/strings.dart';
 
+@entity
 class MovieEntity {
   final bool adult;
   final String backdrop;
   final List<int> genres;
+  @primaryKey
   final int id;
   final String originalLanguage;
   final String originalTitle;
@@ -15,6 +19,7 @@ class MovieEntity {
   final bool video;
   final num voteAverage;
   final int voteCount;
+  final List<String> category;
 
   MovieEntity({
     required this.adult,
@@ -31,6 +36,7 @@ class MovieEntity {
     required this.video,
     required this.voteAverage,
     required this.voteCount,
+    required this.category,
   });
 
   String get backdropUrl => "${Strings.imagesBaseUrl}$backdrop";

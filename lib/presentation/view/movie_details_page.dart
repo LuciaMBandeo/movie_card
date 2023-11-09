@@ -6,7 +6,6 @@ import '../../data/model/movie_preview.dart';
 import '../widgets/common_widgets/scrollable_genres.dart';
 import '../widgets/common_widgets/text_info.dart';
 import '../widgets/movie_details_presentation_widgets/row_like_movie.dart';
-import '../widgets/movie_details_presentation_widgets/row_original_title.dart';
 import '../widgets/movie_details_presentation_widgets/sized_box_intro_info.dart';
 import '../widgets/movie_details_presentation_widgets/text_subtitle.dart';
 
@@ -76,9 +75,10 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                       movie.movie.overview,
                     ),
                   ),
-                  RowOriginalTitle(
-                    movie.movie.originalTitle,
+                  const TextSubtitle(
+                    Strings.originalTitle,
                   ),
+                  TextInfo(movie.movie.originalTitle),
                   const RowLikeMovie(),
                 ],
               ),

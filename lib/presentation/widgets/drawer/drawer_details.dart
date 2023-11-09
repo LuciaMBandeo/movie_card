@@ -33,11 +33,11 @@ class DrawerDetails extends StatelessWidget {
         ),
         DrawerTile(
           label: _homeTile,
-          route: MovieRouter.homePage,
+          route: NamedRoutes.homePage,
         ),
         DrawerTile(
           label: _aboutTheAppTile,
-          route: MovieRouter.aboutTheApp,
+          route: NamedRoutes.aboutTheApp,
         ),
       ],
     );

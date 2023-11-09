@@ -49,8 +49,11 @@ void main() {
     test(
       'When api service returns DataSuccess for fetchMovieList, the repo also returns DataSuccess',
       () async {
-        when(() => apiService.fetchMovieList(any()))
-            .thenAnswer((_) => Future.value(DataSuccess(resultModel)));
+        when(() => apiService.fetchMovieList(any())).thenAnswer(
+          (_) => Future.value(
+            DataSuccess(resultModel),
+          ),
+        );
         DataState<ResultModel> result =
             await moviesRepository.fetchMovies(Endpoints.upcoming);
         expect(result, isA<DataSuccess<ResultModel>>());
@@ -61,7 +64,11 @@ void main() {
       'When api service returns DataFailure for fetchMovieList, the repo also returns DataFailure',
       () async {
         when(() => apiService.fetchMovieList(any())).thenAnswer(
-          (_) => Future.value(DataFailure(Exception("Failed to load"))),
+          (_) => Future.value(
+            DataFailure(
+              Exception("Failed to load"),
+            ),
+          ),
         );
         DataState<ResultModel> result =
             await moviesRepository.fetchMovies(Endpoints.upcoming);
