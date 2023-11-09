@@ -37,6 +37,7 @@ void main() async {
       video: false,
       voteAverage: 8.7,
       voteCount: 340,
+      category: [],
     ),
   ];
 
@@ -58,10 +59,18 @@ void main() async {
 
   test('When initialized, the stream for the popular endpoint should have data',
       () async {
-    when(() => mockUseCaseMovies.call(params: any(named: "params")))
-        .thenAnswer((_) async => DataSuccess(movie));
-    when(() => mockUseCaseGenres.call(params: any(named: "params")))
-        .thenAnswer((_) async => DataSuccess(genresList));
+    when(
+      () => mockUseCaseMovies.call(
+        params: any(named: "params"),
+      ),
+    ).thenAnswer((_) async => DataSuccess(movie));
+    when(
+      () => mockUseCaseGenres.call(
+        params: any(
+          named: "params",
+        ),
+      ),
+    ).thenAnswer((_) async => DataSuccess(genresList));
     Stream<States> resultPopular =
         moviesBloc.popularMoviesStream.map((event) => event.state);
 
@@ -77,15 +86,39 @@ void main() async {
   test(
       'When calling the fetch endpoints movies method from the bloc, it should make one call to the movies use case and one call to the genres use case',
       () async {
-    when(() => mockUseCaseMovies.call(params: any(named: "params")))
-        .thenAnswer((_) async => DataSuccess(movie));
-    when(() => mockUseCaseGenres.call(params: any(named: "params")))
-        .thenAnswer((_) async => DataSuccess(genresList));
+    when(
+      () => mockUseCaseMovies.call(
+        params: any(
+          named: "params",
+        ),
+      ),
+    ).thenAnswer(
+      (_) async => DataSuccess(movie),
+    );
+    when(
+      () => mockUseCaseGenres.call(
+        params: any(
+          named: "params",
+        ),
+      ),
+    ).thenAnswer(
+      (_) async => DataSuccess(genresList),
+    );
     await moviesBloc.fetchEndpointsMovies(Endpoints.popular);
-    verify(() => mockUseCaseMovies.call(params: any(named: "params")))
-        .called(1);
-    verify(() => mockUseCaseGenres.call(params: any(named: "params")))
-        .called(1);
+    verify(
+      () => mockUseCaseMovies.call(
+        params: any(
+          named: "params",
+        ),
+      ),
+    ).called(1);
+    verify(
+      () => mockUseCaseGenres.call(
+        params: any(
+          named: "params",
+        ),
+      ),
+    ).called(1);
     verifyNoMoreInteractions(mockUseCaseMovies);
     verifyNoMoreInteractions(mockUseCaseGenres);
   });
@@ -93,10 +126,24 @@ void main() async {
   test(
       'When asked to show the top rated page, the stream for the top rated endpoint should have data if the response from the use cases is success',
       () async {
-    when(() => mockUseCaseMovies.call(params: any(named: "params")))
-        .thenAnswer((_) async => DataSuccess(movie));
-    when(() => mockUseCaseGenres.call(params: any(named: "params")))
-        .thenAnswer((_) async => DataSuccess(genresList));
+    when(
+      () => mockUseCaseMovies.call(
+        params: any(
+          named: "params",
+        ),
+      ),
+    ).thenAnswer(
+      (_) async => DataSuccess(movie),
+    );
+    when(
+      () => mockUseCaseGenres.call(
+        params: any(
+          named: "params",
+        ),
+      ),
+    ).thenAnswer(
+      (_) async => DataSuccess(genresList),
+    );
     Stream<States> resultTopRated =
         moviesBloc.topRatedMoviesStream.map((event) => event.state);
 
@@ -104,27 +151,88 @@ void main() async {
       States.loading,
       States.success,
     ];
-    expect(resultTopRated, emitsInOrder(expected));
+    expect(
+      resultTopRated,
+      emitsInOrder(expected),
+    );
+    moviesBloc.fetchEndpointsMovies(Endpoints.topRated);
+  });
+
+  test(
+      'When asked to show the top rated page, the stream for the top rated endpoint should not have data if the response from the use cases is empty',
+      () async {
+    when(
+      () => mockUseCaseMovies.call(
+        params: any(named: "params"),
+      ),
+    ).thenAnswer(
+      (_) async => const DataEmpty(),
+    );
+    when(
+      () => mockUseCaseGenres.call(
+        params: any(named: "params"),
+      ),
+    ).thenAnswer(
+      (_) async => const DataEmpty(),
+    );
+    Stream<States> resultTopRated =
+        moviesBloc.topRatedMoviesStream.map((event) => event.state);
+
+    final expected = [
+      States.loading,
+      States.empty,
+    ];
+    expect(
+      resultTopRated,
+      emitsInOrder(expected),
+    );
     moviesBloc.fetchEndpointsMovies(Endpoints.topRated);
   });
 
   test(
       'When asked to show the top rated page, the stream for the top rated endpoint should not have data if the response from the use cases is failure',
       () async {
-    when(() => mockUseCaseMovies.call(params: any(named: "params")))
-        .thenAnswer((_) async => DataFailure(Exception(Strings.errorText)));
-    when(() => mockUseCaseGenres.call(params: any(named: "params")))
-        .thenAnswer((_) async => DataFailure(Exception(Strings.errorText)));
+    when(
+      () => mockUseCaseMovies.call(
+        params: any(
+          named: "params",
+        ),
+      ),
+    ).thenAnswer(
+      (_) async => DataFailure(
+        Exception(
+          Strings.errorText,
+        ),
+      ),
+    );
+    when(
+      () => mockUseCaseGenres.call(
+        params: any(
+          named: "params",
+        ),
+      ),
+    ).thenAnswer(
+      (_) async => DataFailure(
+        Exception(
+          Strings.errorText,
+        ),
+      ),
+    );
     Stream<States> resultTopRated =
         moviesBloc.topRatedMoviesStream.map((event) => event.state);
 
     final expected = [
       States.loading,
-      States.failure,
+      States.empty,
     ];
-    expect(resultTopRated, emitsInOrder(expected));
+    expect(
+      resultTopRated,
+      emitsInOrder(expected),
+    );
     moviesBloc.fetchEndpointsMovies(Endpoints.topRated);
   });
 
-  tearDown(() => moviesBloc.dispose());
+  tearDown(
+    () => moviesBloc.dispose(),
+  );
 }

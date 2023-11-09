@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../config/dependency_handler.dart';
 import '../../core/utils/enums/pages.dart';
 import '../bloc/movies_bloc.dart';
 import '../widgets/common_widgets/home_page_app_bar.dart';
@@ -62,7 +64,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final moviesBloc = MoviesBloc();
+    final moviesBloc =
+        Provider.of<DependencyHandler>(context, listen: false).moviesBloc;
     return Scaffold(
       appBar: HomePageAppBar(
         pageController: pageController,

@@ -31,7 +31,11 @@ void main() {
       'When api service returns DataSuccess for fetchGenresList, the repo also returns DataSuccess',
       () async {
         when(() => apiService.fetchGenresList()).thenAnswer(
-          (_) => Future.value(DataSuccess(jsonEncode(genresList))),
+          (_) => Future.value(
+            DataSuccess(
+              jsonEncode(genresList),
+            ),
+          ),
         );
         DataState<List<GenreModel>> result =
             await genresRepository.fetchGenresList();
@@ -43,7 +47,11 @@ void main() {
       'When api service returns DataFailure for fetchGenresList, the repo also returns DataFailure',
       () async {
         when(() => apiService.fetchGenresList()).thenAnswer(
-          (_) => Future.value(DataFailure(Exception("Failed to load"))),
+          (_) => Future.value(
+            DataFailure(
+              Exception("Failed to load"),
+            ),
+          ),
         );
         DataState<List<GenreModel>> result =
             await genresRepository.fetchGenresList();

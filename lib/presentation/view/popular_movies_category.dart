@@ -39,35 +39,54 @@ class _PopularMoviesState extends State<PopularMoviesCategory> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: StreamBuilder(
-          stream: widget.moviesBloc.popularMoviesStream,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              if (snapshot.data is DataFailure) {
-                return Text(snapshot.data!.error.toString());
-              } else if (snapshot.data is DataSuccess) {
-                return GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: _gridViewChildren,
-                  ),
-                  itemCount: snapshot.data?.data?.length,
-                  itemBuilder: (
-                    BuildContext context,
-                    int index,
-                  ) {
-                    if (snapshot.data?.data?[index] == null) {
-                      return const Text(Strings.errorMovieNotFound);
-                    } else {
-                      return GridContainerMoviePreview(
-                        movie: snapshot.data!.data![index],
-                      );
-                    }
-                  },
-                );
-              }
-            }
-            return const CircularProgressIndicator();
+        child: RefreshIndicator(
+          onRefresh: () {
+            return widget.moviesBloc.fetchEndpointsMovies(
+              endpoint,
+            );
           },
+          child: StreamBuilder(
+            stream: widget.moviesBloc.popularMoviesStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                if (snapshot.data is DataFailure) {
+                  return Text(
+                    snapshot.data!.error.toString(),
+                  );
+                } else if (snapshot.data is DataSuccess) {
+                  final movieList = snapshot.data?.data ?? [];
+                  return GridView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: _gridViewChildren,
+                    ),
+                    itemCount: movieList.length,
+                    itemBuilder: (
+                      BuildContext context,
+                      int index,
+                    ) {
+                      return GridContainerMoviePreview(
+                        movie: movieList[index],
+                      );
+                    },
+                  );
+                } else if (snapshot.data is DataEmpty) {
+                  return Column(
+                    children: [
+                      Image.asset(
+                        Strings.noMoviesFoundImagePath,
+                      ),
+                      const Text(
+                        Strings.errorMovieNotFound,
+                      ),
+                    ],
+                  );
+                }
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
         ),
       ),
     );

@@ -12,12 +12,16 @@ class TextTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: Dimens.fontSizeTitle,
-        fontWeight: FontWeight.bold,
-        color: Colors.white,
+    return Padding(
+      padding: const EdgeInsets.all(Dimens.paddingLabel),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: Dimens.fontSizeTitle,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
     );
   }

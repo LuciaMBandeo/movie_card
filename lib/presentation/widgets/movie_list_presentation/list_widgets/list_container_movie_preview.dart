@@ -23,7 +23,7 @@ class ListContainerMoviePreview extends StatelessWidget {
           onTap: () {
             Navigator.pushNamed(
               context,
-              MovieRouter.movieDetails,
+              NamedRoutes.movieDetails,
               arguments: movie,
             );
           },
